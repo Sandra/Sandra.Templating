@@ -1,0 +1,7 @@
+Should render all 5 items
+
+[for item in small_list]
+    {{item.name}}<br>
+[end for]
+
+End should render all 5 items...

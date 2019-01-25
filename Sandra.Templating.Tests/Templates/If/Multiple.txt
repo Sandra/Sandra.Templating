@@ -1,0 +1,19 @@
+Begin multi if test
+
+[if variable1]
+    It should render me...
+[end if]
+
+[if variable2]
+    And Me
+[end if]
+
+[if variable3]
+    Me Too
+[end if]
+
+[if variable4]
+    Me Three
+[end if]
+
+End multi if test

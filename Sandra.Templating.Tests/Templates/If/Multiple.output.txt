@@ -1,0 +1,19 @@
+Begin multi if test
+
+
+    It should render me...
+
+
+
+    And Me
+
+
+
+    Me Too
+
+
+
+    Me Three
+
+
+End multi if test

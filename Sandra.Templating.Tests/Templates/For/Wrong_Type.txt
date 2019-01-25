@@ -1,0 +1,9 @@
+Should have no output
+
+[for item in wrong_type]
+
+    {{item.name}}<br>
+
+[end for]
+
+End should have no output

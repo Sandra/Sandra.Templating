@@ -1,0 +1,9 @@
+Should have no output
+
+[for item in does_not_exist]
+
+    {{item.name}}<br>
+
+[end for]
+
+End should have no output

@@ -1,0 +1,11 @@
+Begin single if test
+
+[if variable1]
+It should render me...
+
+    [if variable2]
+        And render meeee....
+    [end if]
+[end if]
+
+End single if test

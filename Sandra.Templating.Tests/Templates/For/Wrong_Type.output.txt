@@ -1,0 +1,5 @@
+Should have no output
+
+(ERROR: wrong_type is null or not a `IList<IDictionary<string, object>>`)
+
+End should have no output

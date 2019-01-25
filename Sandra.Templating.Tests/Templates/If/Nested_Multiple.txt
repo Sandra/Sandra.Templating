@@ -1,0 +1,22 @@
+Begin single if test
+
+[if variable1]
+    It should render me...
+    
+    [if variable3]
+        Should render me too...
+    [end if]
+
+    [if variable4]
+        This will be deep
+        
+        [if variable2]
+            3rd level deep
+        [end if]
+    [end if]
+
+    Things
+
+[end if]
+
+End single if test

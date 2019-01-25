@@ -1,0 +1,7 @@
+Begin single if test
+
+[if variable1]
+It should render me...
+[end if]
+
+End single if test
