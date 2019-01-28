@@ -1,13 +1,12 @@
 using System.Collections.Generic;
 using System.IO;
 using Xunit;
-using Shouldly;
 
 namespace Sandra.Templating.Tests
 {
     public class ForTests
     {
-        private const string Path = "./templates/For/";
+        private const string Path = "./Templates/For/";
         private readonly TemplateEngine engine;
 
         private readonly IDictionary<string, object> data = new Dictionary<string, object>
@@ -56,7 +55,7 @@ namespace Sandra.Templating.Tests
 
             var actual = engine.Render(template, data);
 
-            actual.ShouldBe(expected);
+            Assert.Equal(expected, actual, ignoreLineEndingDifferences: true);
         }
     }
 }
