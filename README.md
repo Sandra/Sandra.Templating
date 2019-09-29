@@ -10,10 +10,10 @@ This is meant to be a dead-simple-basic functionality templating engine that can
 
 ```csharp
 var template = @"
-Hello {{name}}
+Hello [=name]
 
 [if fruit]
-    I like {{fruit}}
+    I like [=fruit]
 [end if]
 ";
 
@@ -27,3 +27,9 @@ var engine = new TemplateEngine();
 
 var result = engine.Render(template, data);
 ``` 
+
+# Supported Features
+
+- For Each (nested supported)
+- If (nested supported)
+- Render

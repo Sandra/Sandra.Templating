@@ -4,10 +4,10 @@ This list contains 1 item, with 5 sub items.
 
     This should have sub items...
     
-    {{item.name}}
+    [=item.name]
     
     [for sub_item in item.items
-        {{sub_item.name}}
+        [=sub_item.name]
     [end for]
 
 [end for]

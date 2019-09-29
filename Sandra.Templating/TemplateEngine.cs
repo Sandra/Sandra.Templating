@@ -12,7 +12,7 @@ namespace Sandra.Templating
         private static RegexOptions Options = RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline;
         private Regex IfConditionRegex = new Regex(@"(?s)\[if\s+(?<if>[^][]+)](?<content>(?>(?:(?!\[if\s|\[end\ if]).)+|(?<-open>)\[end\ if]|(?<open>)\[if\s+(?<if>[^][]+)])*(?(open)(?!)))\[end\ if]", Options);
         private Regex ForRegex = new Regex(@"(?s)\[for (?<name>[^][]+) in (?<variable>[^][]+)](?>(?:(?!\[for\s|\[end\ for]).)+|(?<close-open>)\[end\ for]|(?<open>)\[for\s+(?:[^][]+)])*(?(open)(?!))\[end\ for]", Options);
-        private Regex RenderRegex = new Regex(@"(?:\{\{)(?<key>[a-zA-Z]+)(?:\}\})", Options);
+        private Regex RenderRegex = new Regex(@"(?:\[\=)(?<key>[a-zA-Z0-9]+)(?:\])", Options);
 
         private IList<Func<string, IDictionary<string, object>, string>> processors = new List<Func<string, IDictionary<string, object>, string>>(); 
         
@@ -85,7 +85,7 @@ namespace Sandra.Templating
                 var startIndex = $"[for {name} in {key}]".Length;
                 var endIndex = m.Value.Length - "[end for]".Length - startIndex;
 
-                var content = m.Value.Substring(startIndex, endIndex).Replace($"{{{{{name}.", "{{");
+                var content = m.Value.Substring(startIndex, endIndex).Replace($"[={name}.", "[=");
 
                 var sb = new StringBuilder();
                 
