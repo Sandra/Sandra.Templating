@@ -4,6 +4,12 @@
         <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Authors>Phillip Haydon</Authors>
+        <PackageProjectUrl>https://github.com/Sandra/Sandra.Templating</PackageProjectUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     </PropertyGroup>
 
 </Project>

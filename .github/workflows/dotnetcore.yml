@@ -1,9 +1,11 @@
-name: .NET Core
-
+name: Build + Deploy
 on: 
   push:
     branches:
-      - master
+    - master
+
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
 
 jobs:
   build:
@@ -12,19 +14,23 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
+
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.100
-    - name: run minver
-      id: version
-      uses: thefringeninja/action-minver
-    - name: output
-      run: |
-        echo ${{ steps.version.outputs.version }}
+        dotnet-version: 3.1.101
+
+    - name: Generate build number
+      id: buildnumber
+      uses: einaregilsson/build-number@v2
+      with:
+        token: ${{secrets.github_token}}
+
     - name: Build with dotnet
-      run: dotnet build --configuration Release
+      run: dotnet build --configuration Release /p:AssemblyVersion=0.0.${{ steps.buildnumber.outputs.build_number }},Version=0.0.${{ steps.buildnumber.outputs.build_number }}
+
     - name: Run unit tests
-      run: dotnet test
+      run: dotnet test --configuration Release --no-build
+
     - name: Push Nugets
-      run: dotnet nuget --version
+      run: dotnet nuget push Sandra.Templating/bin/Release/*.nupkg -k ${{ secrets.NUGET_TOKEN }} -s https://api.nuget.org/v3/index.json
