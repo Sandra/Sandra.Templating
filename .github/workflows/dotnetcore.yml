@@ -1,6 +1,9 @@
 name: .NET Core
 
-on: [push]
+on: 
+  push:
+    branches:
+      - master
 
 jobs:
   build:
@@ -13,7 +16,15 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.100
+    - name: run minver
+      id: version
+      uses: thefringeninja/action-minver
+    - name: output
+      run: |
+        echo ${{ steps.version.outputs.version }}
     - name: Build with dotnet
       run: dotnet build --configuration Release
     - name: Run unit tests
       run: dotnet test
+    - name: Push Nugets
+      run: dotnet nuget --version
