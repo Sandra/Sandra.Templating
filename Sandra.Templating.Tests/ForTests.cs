@@ -6,7 +6,7 @@ namespace Sandra.Templating.Tests
 {
     public class ForTests
     {
-        private const string Path = "./Templates/For/";
+        private const string TextPath = "./Templates/For/";
         private readonly TemplateEngine engine;
 
         private readonly IDictionary<string, object> data = new Dictionary<string, object>
@@ -50,8 +50,8 @@ namespace Sandra.Templating.Tests
         [InlineData("Wrong_Type.txt", "Wrong_Type.output.txt")]
         public void TemplateTests(string input, string output)
         {
-            var template = File.ReadAllText($"{Path}{input}");
-            var expected = File.ReadAllText($"{Path}{output}");
+            var template = File.ReadAllText($"{TextPath}{input}");
+            var expected = File.ReadAllText($"{TextPath}{output}");
 
             var actual = engine.Render(template, data);
 
