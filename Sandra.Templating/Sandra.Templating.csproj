@@ -10,6 +10,39 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <Description>
+A simple templating engine for simple scenarios like Emails. 
+
+Basic usage example:
+
+```csharp
+var template = @"
+Hello [=name]
+
+[if fruit]
+    I like [=fruit]
+[end if]
+
+Shop Name: [=shop.Name]
+Location: [=shop.Location]
+";
+
+var data = new Dictionary&lt;lstring, object&gt;
+{
+    ["name"] = "World",
+    ["fruit"] = "Bananas",
+    ["shop"] = new Shop
+    {
+        Name = "Fruit Shop",
+        Location = "Singapore"
+    }
+};
+
+var engine = new TemplateEngine();
+
+var result = engine.Render(template, data);
+``` 
+        </Description>
     </PropertyGroup>
 
 
