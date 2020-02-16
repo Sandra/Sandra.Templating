@@ -10,43 +10,17 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-        <Description>
-A simple templating engine for simple scenarios like Emails. 
-
-Basic usage example:
-
-```csharp
-var template = @"
-Hello [=name]
-
-[if fruit]
-    I like [=fruit]
-[end if]
-
-Shop Name: [=shop.Name]
-Location: [=shop.Location]
-";
-
-var data = new Dictionary&lt;lstring, object&gt;
-{
-    ["name"] = "World",
-    ["fruit"] = "Bananas",
-    ["shop"] = new Shop
-    {
-        Name = "Fruit Shop",
-        Location = "Singapore"
-    }
-};
-
-var engine = new TemplateEngine();
-
-var result = engine.Render(template, data);
-``` 
-        </Description>
     </PropertyGroup>
-
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
         <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net45" Version="1.0.0" />
+    </ItemGroup>
+
+    <PropertyGroup>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="..\README.md" Pack="true" PackagePath=""/>
     </ItemGroup>
 </Project>

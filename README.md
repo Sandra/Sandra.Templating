@@ -1,5 +1,3 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/iygj517aax6rdsbh/branch/master?svg=true)](https://ci.appveyor.com/project/phillip-haydon/sandra-templating/branch/master)
-
 # Sandra.Templating
 
 Sandra.Templating, is yet another templating engine, because we always need more.
@@ -40,18 +38,18 @@ var engine = new TemplateEngine();
 var result = engine.Render(template, data);
 ``` 
 
-# Supported Features
+## Supported Features
 
 - For Each (nested supported)
 - If (nested supported)
 - Render
 
-Can render: 
+## Can render: 
 
 - string
 - numbers (byte, short, int, long)
 
-Tested on:
+## Tested on:
 
 - .NET 4.5.2
 - .NET Core 2.2
