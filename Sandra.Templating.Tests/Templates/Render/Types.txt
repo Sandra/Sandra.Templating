@@ -1,0 +1,4 @@
+a=[=a] byte
+b=[=b] short
+c=[=c] int
+d=[=d] long

@@ -9,18 +9,18 @@ namespace Sandra.Templating
 {
     public class TemplateEngine
     {
-        private static RegexOptions Options = RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline;
+        private static RegexOptions Options = RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant;
         private Regex IfConditionRegex = new Regex(@"(?s)\[if\s+(?<if>[^][]+)](?<content>(?>(?:(?!\[if\s|\[end\ if]).)+|(?<-open>)\[end\ if]|(?<open>)\[if\s+(?<if>[^][]+)])*(?(open)(?!)))\[end\ if]", Options);
         private Regex ForRegex = new Regex(@"(?s)\[for (?<name>[^][]+) in (?<variable>[^][]+)](?>(?:(?!\[for\s|\[end\ for]).)+|(?<close-open>)\[end\ for]|(?<open>)\[for\s+(?:[^][]+)])*(?(open)(?!))\[end\ for]", Options);
-        private Regex RenderRegex = new Regex(@"(?:\[\=)(?<key>[a-zA-Z0-9]+)(?:\])", Options);
+        private Regex RenderRegex = new Regex(@"(?:\[\=)(?<key>[a-zA-Z0-9\.]+)(?:\])", Options);
 
         private IList<Func<string, IDictionary<string, object>, string>> processors = new List<Func<string, IDictionary<string, object>, string>>(); 
         
         public TemplateEngine()
         {
             processors.Add(PerformIfConditionSubstitutions);
-            processors.Add(PerformReplacementSubstitutions);
             processors.Add(PerformForLoopSubstitutions);
+            processors.Add(PerformReplacementSubstitutions);
         }
         
         public string Render(string template, IDictionary<string, object> data)
@@ -55,13 +55,22 @@ namespace Sandra.Templating
             return RenderRegex.Replace(template, m =>
             {
                 var key = m.Groups["key"].Captures[0].Value;
-                
-                if (!data.ContainsKey(key.ToLower()))
+                var keySplit = key.Split(new[] {'.'});
+                var keyPrefix = keySplit.First();
+
+                if (!data.ContainsKey(keyPrefix.ToLower()))
                 {
                     return string.Empty;
                 }
 
-                return data[key.ToLower()].ToString();
+                var value = data[keyPrefix.ToLower()];
+
+                if (keySplit.Length > 1)
+                {
+                    return value.GetType().GetProperty(keySplit.Last())?.GetValue(value).ToString();
+                }
+                
+                return value.ToString();
             });
         }
 
