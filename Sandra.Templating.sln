@@ -1,14 +1,13 @@
-﻿
+﻿				
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sandra.Templating", "Sandra.Templating\Sandra.Templating.csproj", "{5C961C79-A8EC-4B98-82F0-9CC6FB4C1DD4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sandra.Templating", "src\Sandra.Templating\Sandra.Templating.csproj", "{5C961C79-A8EC-4B98-82F0-9CC6FB4C1DD4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sandra.Templating.Tests", "Sandra.Templating.Tests\Sandra.Templating.Tests.csproj", "{EAA4A794-37E2-45C5-AA2F-83339839C050}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sandra.Templating.Tests", "tests\Sandra.Templating.Tests\Sandra.Templating.Tests.csproj", "{EAA4A794-37E2-45C5-AA2F-83339839C050}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Things", "Things", "{06AB0BF1-522E-48D3-80AB-EC9E0E5E97CA}"
 ProjectSection(SolutionItems) = preProject
 	LICENSE = LICENSE
 	README.md = README.md
-	appveyor.yml = appveyor.yml
 	.gitignore = .gitignore
 	.github\workflows\dotnetcore.yml = .github\workflows\dotnetcore.yml
 EndProjectSection
