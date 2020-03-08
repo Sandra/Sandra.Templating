@@ -48,6 +48,13 @@ var result = engine.Render(template, data);
 
 - string
 - numbers (byte, short, int, long)
+- DateTime
+
+Supports basic formatting.
+
+```csharp
+[=FormattedDate:dd/MM/yyyy]
+```
 
 ## Tested on:
 

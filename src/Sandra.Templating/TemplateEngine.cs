@@ -12,7 +12,7 @@ namespace Sandra.Templating
         private static RegexOptions Options = RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant;
         private Regex IfConditionRegex = new Regex(@"(?s)\[if\s+(?<if>[^][]+)](?<content>(?>(?:(?!\[if\s|\[end\ if]).)+|(?<-open>)\[end\ if]|(?<open>)\[if\s+(?<if>[^][]+)])*(?(open)(?!)))\[end\ if]", Options);
         private Regex ForRegex = new Regex(@"(?s)\[for (?<name>[^][]+) in (?<variable>[^][]+)](?>(?:(?!\[for\s|\[end\ for]).)+|(?<close-open>)\[end\ for]|(?<open>)\[for\s+(?:[^][]+)])*(?(open)(?!))\[end\ for]", Options);
-        private Regex RenderRegex = new Regex(@"(?:\[\=)(?<key>[a-zA-Z0-9\.]+)(?:\])", Options);
+        private Regex RenderRegex = new Regex(@"(?:\[\=)(?<key>[a-zA-Z0-9\.]+)(?:\:(?<format>[a-zA-Z-0-9\\\/-_\.\: ]+))?(?:\])", Options);
 
         private IList<Func<string, IDictionary<string, object>, string>> processors = new List<Func<string, IDictionary<string, object>, string>>(); 
         
@@ -55,23 +55,44 @@ namespace Sandra.Templating
             return RenderRegex.Replace(template, m =>
             {
                 var key = m.Groups["key"].Captures[0].Value;
+                var format = GetFormat(m.Groups["format"]);
                 var keySplit = key.Split(new[] {'.'});
                 var keyPrefix = keySplit.First();
 
-                if (!data.ContainsKey(keyPrefix.ToLower()))
+                var rawValue = data.FirstOrDefault(x => x.Key.Equals(keyPrefix, StringComparison.OrdinalIgnoreCase));
+                
+                if (string.IsNullOrEmpty(rawValue.Key))
                 {
                     return string.Empty;
                 }
 
-                var value = data[keyPrefix.ToLower()];
-
+                // Assume we need to take the value of a property
                 if (keySplit.Length > 1)
                 {
-                    return value.GetType().GetProperty(keySplit.Last())?.GetValue(value).ToString();
+                    var value = rawValue.Value.GetType().GetProperty(keySplit.Last())?.GetValue(rawValue.Value).ToString();
+
+                    return string.Format(format, value);
                 }
-                
-                return value.ToString();
+
+                return string.Format(format, rawValue.Value);
             });
+        }
+
+        private string GetFormat(Group formatGroup)
+        {
+            if (!formatGroup.Success)
+            {
+                return "{0}";
+            }
+
+            var format = formatGroup.Captures[0].Value;
+            
+            if (string.IsNullOrEmpty(format))
+            {
+                return "{0}";
+            }
+
+            return "{0:" + format + "}";
         }
 
         private string PerformForLoopSubstitutions(string template, IDictionary<string, object> data)

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Xunit;
@@ -26,7 +27,8 @@ namespace Sandra.Templating.Tests
             ["a"] = (byte)100,
             ["b"] = (short)1_000,
             ["c"] = (int)100_000,
-            ["d"] = (long)10_000_000_000
+            ["d"] = (long)10_000_000_000,
+            ["FormattedDate"] = DateTime.Parse("2020-03-08")
         };
 
         public RenderTests()
@@ -38,7 +40,7 @@ namespace Sandra.Templating.Tests
         [InlineData("Single_Match.txt", "Single_Match.output.txt")]
         [InlineData("Single_Class_Match.txt", "Single_Class_Match.output.txt")]
         [InlineData("Types.txt", "Types.output.txt")]
-//        [InlineData("Single_No_Match.txt", "Single_No_Match.output.txt")]
+        [InlineData("Single_Format.txt", "Single_Format.output.txt")]
 //        [InlineData("Multiple.txt", "Multiple.output.txt")]
 //        [InlineData("Nested.txt", "Nested.output.txt")]
 //        [InlineData("Nested_Multiple.txt", "Nested_Multiple.output.txt")]
@@ -55,6 +57,8 @@ namespace Sandra.Templating.Tests
         [Theory]
         [InlineData("Single_Match.txt", "Single_Match.output.txt")]
         [InlineData("Single_Class_Match.txt", "Single_Class_Match.output.txt")]
+        [InlineData("Types.txt", "Types.output.txt")]
+        [InlineData("Single_Format.txt", "Single_Format.output.txt")]
 //        [InlineData("Single_No_Match.txt", "Single_No_Match.output.txt")]
 //        [InlineData("Multiple.txt", "Multiple.output.txt")]
 //        [InlineData("Nested.txt", "Nested.output.txt")]
