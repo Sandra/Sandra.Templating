@@ -11,6 +11,7 @@
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <PackageTags>template</PackageTags>
+        <Description>Very basic templating with basic functionality to cover most use cases, like email templates.</Description>
     </PropertyGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
