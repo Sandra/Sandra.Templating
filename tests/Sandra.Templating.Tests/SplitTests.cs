@@ -58,7 +58,7 @@ namespace Sandra.Templating.Tests
 
         [Theory]
         [InlineData("6_Items.txt", "6_Items.output.txt")]
-        [InlineData("8_objects_list.txt", "8_objects_list.output.txt")]
+        [InlineData("8_Objects_List.txt", "8_Objects_List.output.txt")]
         public void TemplateTests(string input, string output)
         {
             var template = File.ReadAllText($"{TextPath}{input}");
