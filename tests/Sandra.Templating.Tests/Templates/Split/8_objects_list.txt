@@ -1,0 +1,15 @@
+Should render all 8 items split after every 2.
+
+<ol>
+[for item in object_list]
+    [split=2]
+</ol>
+<ol>
+    [split end]
+    <li>
+    [=item.name]
+    </li>
+[end for]
+</ol>
+
+End should render all 8 items...

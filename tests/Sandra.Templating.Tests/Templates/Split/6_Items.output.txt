@@ -1,0 +1,49 @@
+Should render all 6 items
+
+<table>
+<tr>
+
+    
+    <td>
+    Banana
+    </td>
+
+
+    
+    <td>
+    Apple
+    </td>
+
+
+    
+    <td>
+    Grape
+    </td>
+
+
+</tr>
+<tr>
+    
+
+    
+    <td>
+    Watermelon
+    </td>
+
+
+    
+    <td>
+    Kiwifruit
+    </td>
+
+
+    
+    <td>
+    Peach
+    </td>
+
+
+</tr>
+</table>
+
+End should render all 6 items...

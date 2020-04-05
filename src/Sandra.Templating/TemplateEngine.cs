@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -13,7 +15,8 @@ namespace Sandra.Templating
         private Regex IfConditionRegex = new Regex(@"(?s)\[if\s+(?<if>[^][]+)](?<content>(?>(?:(?!\[if\s|\[end\ if]).)+|(?<-open>)\[end\ if]|(?<open>)\[if\s+(?<if>[^][]+)])*(?(open)(?!)))\[end\ if]", Options);
         private Regex ForRegex = new Regex(@"(?s)\[for (?<name>[^][]+) in (?<variable>[^][]+)](?>(?:(?!\[for\s|\[end\ for]).)+|(?<close-open>)\[end\ for]|(?<open>)\[for\s+(?:[^][]+)])*(?(open)(?!))\[end\ for]", Options);
         private Regex RenderRegex = new Regex(@"(?:\[\=)(?<key>[a-zA-Z0-9\.]+)(?:\:(?<format>[a-zA-Z-0-9\\\/-_\.\: ]+))?(?:\])", Options);
-
+        private Regex ForSplit = new Regex(@"(?s)\[split\=(?<mod>\d+)](?<value>(?>(?:(?!\[split\s|\[split\ end]).)+|(?<-open>)\[split\ end]|(?<open>)\[split\=(?<mod>\d+)])*(?(open)(?!)))\[split\ end]", Options);
+        
         private IList<Func<string, IDictionary<string, object>, string>> processors = new List<Func<string, IDictionary<string, object>, string>>(); 
         
         public TemplateEngine()
@@ -56,7 +59,7 @@ namespace Sandra.Templating
             {
                 var key = m.Groups["key"].Captures[0].Value;
                 var format = GetFormat(m.Groups["format"]);
-                var keySplit = key.Split(new[] {'.'});
+                var keySplit = key.Split('.');
                 var keyPrefix = keySplit.First();
 
                 var rawValue = data.FirstOrDefault(x => x.Key.Equals(keyPrefix, StringComparison.OrdinalIgnoreCase));
@@ -100,32 +103,82 @@ namespace Sandra.Templating
             return ForRegex.Replace(template, m =>
             {
                 var key = m.Groups["variable"].Captures[0].Value;
-                var name = m.Groups["name"].Captures[0].Value;
-                
+                var name = m.Groups["name"].Captures[0].Value; 
+
                 if (!data.ContainsKey(key.ToLower()))
                 {
                     return string.Empty;
                 }
 
-                if (!(data[key] is IList<IDictionary<string, object>> items))
+                // If the type is not IEnumerable, or type is string (because string is enumerable to char[])
+                // Then return an error as we don't want to iterate over it.
+                if (!(data[key] is IEnumerable items) || data[key] is string)
                 {
-                    return $"(ERROR: {key} is null or not a `IList<IDictionary<string, object>>`)";
+                    return $"(ERROR: {key} is null or not a `IEnumerable`)";
                 }
 
                 var startIndex = $"[for {name} in {key}]".Length;
                 var endIndex = m.Value.Length - "[end for]".Length - startIndex;
 
                 var content = m.Value.Substring(startIndex, endIndex).Replace($"[={name}.", "[=");
+                var splitResult = ForSplit.Match(content);
+                var mod = new LoopMod();
+
+                if (splitResult.Success)
+                {
+                    mod.HasMod = true;
+                    mod.Value = splitResult.Groups["value"].Captures[0].Value;
+                    mod.ModAt = int.Parse(splitResult.Groups["mod"].Captures[0].Value);
+
+                    content = ForSplit.Replace(content, string.Empty);
+                }
 
                 var sb = new StringBuilder();
-                
+                var index = 0;
+
                 foreach (var item in items)
                 {
-                    sb.AppendLine(Render(content, item));
+                    if (mod.HasMod && index > 0 && index % mod.ModAt == 0)
+                    {
+                        sb.AppendLine(mod.Value);
+                    }
+
+                    if (item is IDictionary<string, object> banana)
+                    {
+                        sb.AppendLine(Render(content, banana));
+                    }
+                    else
+                    {
+                        var itemAsDic = Convert(item);
+                        sb.AppendLine(Render(content, itemAsDic));
+                    }
+
+                    index++;
                 }
 
                 return sb.ToString();
             });
+        }
+
+        private static IDictionary<string, object> Convert(object item)
+        {
+            var properties = item.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
+            
+            var result = new Dictionary<string, object>();
+
+            foreach (var propertyInfo in properties)
+            {
+                result.Add(propertyInfo.Name, propertyInfo.GetValue(item));
+            }
+
+            return result;
+        }
+
+        private class LoopMod
+        {
+            public bool HasMod { get; set; }
+            public int ModAt { get; set; }
+            public string Value { get; set; } = string.Empty;
         }
     }
 }

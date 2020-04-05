@@ -1,0 +1,67 @@
+Should render all 8 items split after every 2.
+
+<ol>
+
+    
+    <li>
+    Bob
+    </li>
+
+
+    
+    <li>
+    Fred
+    </li>
+
+
+</ol>
+<ol>
+    
+
+    
+    <li>
+    James
+    </li>
+
+
+    
+    <li>
+    John
+    </li>
+
+
+</ol>
+<ol>
+    
+
+    
+    <li>
+    Dan
+    </li>
+
+
+    
+    <li>
+    Peter
+    </li>
+
+
+</ol>
+<ol>
+    
+
+    
+    <li>
+    Zack
+    </li>
+
+
+    
+    <li>
+    Sam
+    </li>
+
+
+</ol>
+
+End should render all 8 items...

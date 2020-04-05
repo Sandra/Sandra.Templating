@@ -1,0 +1,17 @@
+Should render all 6 items
+
+<table>
+<tr>
+[for item in small_list]
+    [split=3]
+</tr>
+<tr>
+    [split end]
+    <td>
+    [=item.name]
+    </td>
+[end for]
+</tr>
+</table>
+
+End should render all 6 items...
