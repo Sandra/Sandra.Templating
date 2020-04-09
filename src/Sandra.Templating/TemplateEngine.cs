@@ -11,13 +11,13 @@ namespace Sandra.Templating
 {
     public class TemplateEngine
     {
-        private static RegexOptions Options = RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant;
-        private Regex IfConditionRegex = new Regex(@"(?s)\[if\s+(?<if>[^][]+)](?<content>(?>(?:(?!\[if\s|\[end\ if]).)+|(?<-open>)\[end\ if]|(?<open>)\[if\s+(?<if>[^][]+)])*(?(open)(?!)))\[end\ if]", Options);
-        private Regex ForRegex = new Regex(@"(?s)\[for (?<name>[^][]+) in (?<variable>[^][]+)](?>(?:(?!\[for\s|\[end\ for]).)+|(?<close-open>)\[end\ for]|(?<open>)\[for\s+(?:[^][]+)])*(?(open)(?!))\[end\ for]", Options);
-        private Regex RenderRegex = new Regex(@"(?:\[\=)(?<key>[a-zA-Z0-9\.]+)(?:\:(?<format>[a-zA-Z-0-9\\\/-_\.\: ]+))?(?:\])", Options);
-        private Regex ForSplit = new Regex(@"(?s)\[split\=(?<mod>\d+)](?<value>(?>(?:(?!\[split\s|\[split\ end]).)+|(?<-open>)\[split\ end]|(?<open>)\[split\=(?<mod>\d+)])*(?(open)(?!)))\[split\ end]", Options);
+        private static readonly RegexOptions Options = RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant;
+        private static readonly Regex IfConditionRegex = new Regex(@"(?s)\[if\s+(?<if>[^][]+)](?<content>(?>(?:(?!\[if\s|\[end\ if]).)+|(?<-open>)\[end\ if]|(?<open>)\[if\s+(?<if>[^][]+)])*(?(open)(?!)))\[end\ if]", Options);
+        private static readonly Regex ForRegex = new Regex(@"(?s)\[for (?<name>[^][]+) in (?<variable>[^][]+)](?>(?:(?!\[for\s|\[end\ for]).)+|(?<close-open>)\[end\ for]|(?<open>)\[for\s+(?:[^][]+)])*(?(open)(?!))\[end\ for]", Options);
+        private static readonly Regex RenderRegex = new Regex(@"(?:\[\=)(?<key>[a-zA-Z0-9\.]+)(?:\:(?<format>[a-zA-Z-0-9\\\/-_\.\: ]+))?(?:\])", Options);
+        private static readonly Regex ForSplit = new Regex(@"(?s)\[split\=(?<mod>\d+)](?<value>(?>(?:(?!\[split\s|\[split\ end]).)+|(?<-open>)\[split\ end]|(?<open>)\[split\=(?<mod>\d+)])*(?(open)(?!)))\[split\ end]", Options);
         
-        private IList<Func<string, IDictionary<string, object>, string>> processors = new List<Func<string, IDictionary<string, object>, string>>(); 
+        private readonly IList<Func<string, IDictionary<string, object>, string>> processors = new List<Func<string, IDictionary<string, object>, string>>(); 
         
         public TemplateEngine()
         {
@@ -103,16 +103,18 @@ namespace Sandra.Templating
             return ForRegex.Replace(template, m =>
             {
                 var key = m.Groups["variable"].Captures[0].Value;
-                var name = m.Groups["name"].Captures[0].Value; 
+                var name = m.Groups["name"].Captures[0].Value;
 
-                if (!data.ContainsKey(key.ToLower()))
+                var matchedData = data.FirstOrDefault(x => x.Key.ToLower().Equals(key.ToLower()));
+
+                if (string.IsNullOrEmpty(matchedData.Key))
                 {
                     return string.Empty;
                 }
 
                 // If the type is not IEnumerable, or type is string (because string is enumerable to char[])
                 // Then return an error as we don't want to iterate over it.
-                if (!(data[key] is IEnumerable items) || data[key] is string)
+                if (!(matchedData.Value is IEnumerable items) || matchedData.Value is string)
                 {
                     return $"(ERROR: {key} is null or not a `IEnumerable`)";
                 }
