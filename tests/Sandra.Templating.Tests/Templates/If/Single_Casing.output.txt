@@ -1,0 +1,7 @@
+Begin single if test with uppercase variable
+
+
+It should render me... verifies that mixed casing still finds a value.
+
+
+End single if test

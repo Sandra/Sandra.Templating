@@ -1,0 +1,7 @@
+Begin single if test with uppercase variable
+
+[if UPPER_CASE]
+It should render me... verifies that mixed casing still finds a value.
+[end if]
+
+End single if test

@@ -42,9 +42,10 @@ namespace Sandra.Templating
         {
             return IfConditionRegex.Replace(template, m =>
             {
-                var key = m.Groups["if"].Captures[0].Value.ToLower();
+                var key = m.Groups["if"].Captures[0].Value;
+                var rawValue = data.FirstOrDefault(x => x.Key.ToLower().Equals(key.ToLower()));
                 
-                if (!data.ContainsKey(key))
+                if (string.IsNullOrEmpty(rawValue.Key))
                 {
                     return string.Empty;
                 }
@@ -62,7 +63,7 @@ namespace Sandra.Templating
                 var keySplit = key.Split('.');
                 var keyPrefix = keySplit.First();
 
-                var rawValue = data.FirstOrDefault(x => x.Key.Equals(keyPrefix, StringComparison.OrdinalIgnoreCase));
+                var rawValue = data.FirstOrDefault(x => x.Key.ToLower().Equals(keyPrefix.ToLower()));
                 
                 if (string.IsNullOrEmpty(rawValue.Key))
                 {
@@ -105,16 +106,16 @@ namespace Sandra.Templating
                 var key = m.Groups["variable"].Captures[0].Value;
                 var name = m.Groups["name"].Captures[0].Value;
 
-                var matchedData = data.FirstOrDefault(x => x.Key.ToLower().Equals(key.ToLower()));
+                var rawValue = data.FirstOrDefault(x => x.Key.ToLower().Equals(key.ToLower()));
 
-                if (string.IsNullOrEmpty(matchedData.Key))
+                if (string.IsNullOrEmpty(rawValue.Key))
                 {
                     return string.Empty;
                 }
 
                 // If the type is not IEnumerable, or type is string (because string is enumerable to char[])
                 // Then return an error as we don't want to iterate over it.
-                if (!(matchedData.Value is IEnumerable items) || matchedData.Value is string)
+                if (!(rawValue.Value is IEnumerable items) || rawValue.Value is string)
                 {
                     return $"(ERROR: {key} is null or not a `IEnumerable`)";
                 }
