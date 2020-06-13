@@ -42,6 +42,7 @@ var result = engine.Render(template, data);
 
 - For Each (nested supported)
 - If (nested supported)
+- IIf (ternary rendering based on a condition)
 - Render
 
 ## Can render: 
@@ -56,6 +57,26 @@ Supports basic formatting.
 [=FormattedDate:dd/MM/yyyy]
 ```
 
+## IIf
+
+Using the following in a template
+
+```csharp
+[iif variable = banana ? "A fruit is I" : "I is not a fruit :("]
+```
+
+Given
+```csharp 
+var data = new Dictionary<string, object>
+{
+    ["variable"] = "banana"
+}
+```
+
+Would render:
+
+> A fruit is I
+    
 ## Tested on:
 
 - .NET 4.5.2
