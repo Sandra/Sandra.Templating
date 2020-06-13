@@ -25,57 +25,6 @@
         <Content Include="Templates\**\*.*">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
-        <Content Update="Templates\If\Split\6_Items.output.txt">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Update="Templates\If\Split\6_Items.txt">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Update="Templates\If\Split\8_Objects_List.output.txt">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Update="Templates\If\Split\8_Objects_List.txt">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Update="Templates\IIf\Multiple.output.txt">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Update="Templates\IIf\Multiple.txt">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Update="Templates\IIf\Nested.output.txt">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Update="Templates\IIf\Nested.txt">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Update="Templates\IIf\Nested_Multiple.output.txt">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Update="Templates\IIf\Nested_Multiple.txt">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Update="Templates\IIf\Single.output.txt">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Update="Templates\IIf\Single.txt">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Update="Templates\IIf\Single_Casing.output.txt">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Update="Templates\IIf\Single_Casing.txt">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Update="Templates\IIf\Single_No_Match.output.txt">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Update="Templates\IIf\Single_No_Match.txt">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Update="Templates\IIf\Single-True - Copy.txt">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
     </ItemGroup>
 
 </Project>

@@ -1,0 +1,1 @@
+[iif interval=d ? 'Banana':'Weekly']
