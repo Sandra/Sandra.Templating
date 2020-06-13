@@ -16,6 +16,7 @@ namespace Sandra.Templating
         private static readonly Regex ForRegex = new Regex(@"(?s)\[for (?<name>[^][]+) in (?<variable>[^][]+)](?>(?:(?!\[for\s|\[end\ for]).)+|(?<close-open>)\[end\ for]|(?<open>)\[for\s+(?:[^][]+)])*(?(open)(?!))\[end\ for]", Options);
         private static readonly Regex RenderRegex = new Regex(@"(?:\[\=)(?<key>[a-zA-Z0-9\.]+)(?:\:(?<format>[a-zA-Z-0-9\\\/-_\.\: ]+))?(?:\])", Options);
         private static readonly Regex ForSplit = new Regex(@"(?s)\[split\=(?<mod>\d+)](?<value>(?>(?:(?!\[split\s|\[split\ end]).)+|(?<-open>)\[split\ end]|(?<open>)\[split\=(?<mod>\d+)])*(?(open)(?!)))\[split\ end]", Options);
+        private static readonly Regex RenderTernaryRegex = new Regex(@"(?:\[iif\s+(?<variable>[a-zA-Z0-9_]+)\s?=\s?(?<value>[a-zA-Z0-9_]+)\s?\?\s?""(?<true_variable>[^""]+)""\s?:\s?""(?<false_variable>[^""]+)""\])", Options);
         
         private readonly IList<Func<string, IDictionary<string, object>, string>> processors = new List<Func<string, IDictionary<string, object>, string>>(); 
         
@@ -24,8 +25,9 @@ namespace Sandra.Templating
             processors.Add(PerformIfConditionSubstitutions);
             processors.Add(PerformForLoopSubstitutions);
             processors.Add(PerformReplacementSubstitutions);
+            processors.Add(PerformTernarySubstitutions);
         }
-        
+
         public string Render(string template, IDictionary<string, object> data)
         {
             var result = template;
@@ -36,6 +38,19 @@ namespace Sandra.Templating
             }
 
             return result;
+        }
+
+        private string PerformTernarySubstitutions(string template, IDictionary<string, object> data)
+        {
+            return RenderTernaryRegex.Replace(template, m =>
+            {
+                var key = m.Groups["variable"].Value;
+                var value = m.Groups["value"].Value;
+                
+                var rawValue = data.FirstOrDefault(x => x.Key.ToLower().Equals(key.ToLower()));
+
+                return rawValue.Value.Equals(value) ? m.Groups["true_variable"].Value : m.Groups["false_variable"].Value;
+            });
         }
 
         private string PerformIfConditionSubstitutions(string template, IDictionary<string, object> data)
