@@ -16,7 +16,7 @@ namespace Sandra.Templating
         private static readonly Regex ForRegex = new Regex(@"(?s)\[for (?<name>[^][]+) in (?<variable>[^][]+)](?>(?:(?!\[for\s|\[end\ for]).)+|(?<close-open>)\[end\ for]|(?<open>)\[for\s+(?:[^][]+)])*(?(open)(?!))\[end\ for]", Options);
         private static readonly Regex RenderRegex = new Regex(@"(?:\[\=)(?<key>[a-zA-Z0-9\.]+)(?:\:(?<format>[a-zA-Z-0-9\\\/-_\.\: ]+))?(?:\])", Options);
         private static readonly Regex ForSplit = new Regex(@"(?s)\[split\=(?<mod>\d+)](?<value>(?>(?:(?!\[split\s|\[split\ end]).)+|(?<-open>)\[split\ end]|(?<open>)\[split\=(?<mod>\d+)])*(?(open)(?!)))\[split\ end]", Options);
-        private static readonly Regex RenderTernaryRegex = new Regex(@"(?:\[iif[ ]*(?<variable>[a-zA-Z0-9_]+)[ =]*(?<value>[a-zA-Z0-9]+)[ \?]*(?<fq>['""]{1})(?<true_variable>(?:(?!").)+)\k<fq>[ :]+(?<sq>['""]{1})(?<false_variable>(?:(?!\k<sq>).)+)\k<sq>[ ]*\])", Options);
+        private static readonly Regex RenderTernaryRegex = new Regex(@"(?:\[iif[ ]*(?<variable>[a-zA-Z0-9_]+)[ =]*(?<value>[a-zA-Z0-9]+)[ \?]*(?<fq>['""]{1})(?<true_variable>(?:(?!\k<fq>).)+)\k<fq>[ :]+(?<sq>['""]{1})(?<false_variable>(?:(?!\k<sq>).)+)\k<sq>[ ]*\])", Options);
         
         private readonly IList<Func<string, IDictionary<string, object>, string>> processors = new List<Func<string, IDictionary<string, object>, string>>(); 
         
