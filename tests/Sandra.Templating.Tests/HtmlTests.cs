@@ -11,6 +11,7 @@ namespace Sandra.Templating.Tests
 
         private readonly IDictionary<string, object> data = new Dictionary<string, object>
         {
+            ["interval"] = "d",
             ["peeps"] = new List<IDictionary<string, object>>
             {
                 new Dictionary<string, object>

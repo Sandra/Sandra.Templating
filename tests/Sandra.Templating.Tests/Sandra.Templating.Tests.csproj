@@ -25,6 +25,12 @@
         <Content Include="Templates\**\*.*">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
+        <Content Update="Templates\IIf\Multiple-Usage-Mix-Quotes.output.txt">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Update="Templates\IIf\Multiple-Usage-Mix-Quotes.txt">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
 
 </Project>

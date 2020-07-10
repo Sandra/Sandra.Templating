@@ -22,6 +22,8 @@ namespace Sandra.Templating.Tests
         [InlineData("Single-True.txt", "Single-True.output.txt")]
         [InlineData("Single-False.txt", "Single-False.output.txt")]
         [InlineData("Single-True-Single-Quotes.txt", "Single-True-Single-Quotes.output.txt")]
+        [InlineData("Single-True-Mix-Quotes.txt", "Single-True-Mix-Quotes.output.txt")]
+        [InlineData("Multiple-Usage-Mix-Quotes.txt", "Multiple-Usage-Mix-Quotes.output.txt")]
         public void TemplateTests(string input, string output)
         {
             var template = File.ReadAllText($"{Path}{input}");

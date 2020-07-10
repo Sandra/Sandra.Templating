@@ -1,0 +1,1 @@
+[iif interval = d ? "Today's" : "Weekly Thing's"]
