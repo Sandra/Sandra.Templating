@@ -35,5 +35,27 @@ namespace Sandra.Templating.Tests
 
             Assert.Equal(expected, actual, ignoreLineEndingDifferences: true);
         }
+        
+        [Fact]
+        public void TestScenarios()
+        {
+            var engine = new TemplateEngine();
+
+            var template = "[iif IsReminder?'Reminder: ':''][iif IsUploader?'[=RenderUploaderSubject]':''][iif IsEditor?'[=RenderEditorSubject]':'']";
+
+            var data = new Dictionary<string, object>
+            {
+                ["IsReminder"] = false,
+                ["IsEditor"] = true,
+                ["IsUploader"] = false,
+                ["RenderUploaderSubject"] = "Hello [=Name] you're an Uploader",
+                ["RenderEditorSubject"] = "Hello [=Name] you're an Editor",
+                ["Name"] = "Phillip",
+            };
+
+            var result = engine.Render(template, data);
+
+            Assert.Equal("Hello Phillip you're an Editor", result);
+        }
     }
 }
