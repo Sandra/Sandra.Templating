@@ -57,15 +57,36 @@ namespace Sandra.Templating
         {
             return IfConditionRegex.Replace(template, m =>
             {
-                var key = m.Groups["if"].Captures[0].Value;
-                var rawValue = data.FirstOrDefault(x => x.Key.ToLower().Equals(key.ToLower()));
-                
-                if (string.IsNullOrEmpty(rawValue.Key))
-                {
-                    return string.Empty;
-                }
+                var content = m.Groups["if"].Captures[0].Value;
 
-                return Render(m.Groups["content"].Value, data);
+                if (content.Contains('='))
+                {
+                    var split = content.Split('=');
+                    var rawValue = data.FirstOrDefault(x => x.Key.ToLower().Equals(split[0].Trim().ToLower()));
+
+                    if (string.IsNullOrEmpty(rawValue.Key))
+                    {
+                        return string.Empty;
+                    }
+
+                    if (split[1].Trim().ToLower() != rawValue.Value.ToString().ToLower())
+                    {
+                        return string.Empty;
+                    }
+                    
+                    return Render(m.Groups["content"].Value, data);
+                }
+                else
+                {
+                    var rawValue = data.FirstOrDefault(x => x.Key.ToLower().Equals(content.ToLower()));
+
+                    if (string.IsNullOrEmpty(rawValue.Key))
+                    {
+                        return string.Empty;
+                    }
+
+                    return Render(m.Groups["content"].Value, data);
+                }
             });
         }
 

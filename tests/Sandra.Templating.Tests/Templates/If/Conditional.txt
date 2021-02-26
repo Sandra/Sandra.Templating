@@ -1,0 +1,11 @@
+Begin conditional if test
+
+[if banana=yellow]
+I should render
+[end if]
+
+[if banana=red]
+I should not render
+[end if]
+
+End conditional if test

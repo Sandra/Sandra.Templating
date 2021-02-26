@@ -21,6 +21,7 @@ namespace Sandra.Templating.Tests
             ["variable9"] = "Variable Value Nine",
             ["variable0"] = "Variable Value Ten",
             ["UPPER_case"] = "Variable name and template name dont match but test should pass",
+            ["Banana"] = "Yellow",
         };
 
         public IfTests()
@@ -35,6 +36,7 @@ namespace Sandra.Templating.Tests
         [InlineData("Nested.txt", "Nested.output.txt")]
         [InlineData("Nested_Multiple.txt", "Nested_Multiple.output.txt")]
         [InlineData("Single_Casing.txt", "Single_Casing.output.txt")]
+        [InlineData("Conditional.txt", "Conditional.output.txt")]
         public void TemplateTests(string input, string output)
         {
             var template = File.ReadAllText($"{Path}{input}");
