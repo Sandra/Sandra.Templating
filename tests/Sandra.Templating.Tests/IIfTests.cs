@@ -10,7 +10,8 @@ namespace Sandra.Templating.Tests
         private readonly TemplateEngine engine;
         private readonly IDictionary<string, object> data = new Dictionary<string, object>
         {
-            ["interval"] = "d"
+            ["interval"] = "d",
+            ["IsEnabled"] = true
         };
 
         public IIfTests()
@@ -19,6 +20,7 @@ namespace Sandra.Templating.Tests
         }
         
         [Theory]
+        [InlineData("BooleanCheck.txt", "BooleanCheck.output.txt")]
         [InlineData("Single-True.txt", "Single-True.output.txt")]
         [InlineData("Single-False.txt", "Single-False.output.txt")]
         [InlineData("Single-True-Single-Quotes.txt", "Single-True-Single-Quotes.output.txt")]
