@@ -28,7 +28,9 @@ namespace Sandra.Templating.Tests
             ["b"] = (short)1_000,
             ["c"] = (int)100_000,
             ["d"] = (long)10_000_000_000,
-            ["FormattedDate"] = DateTime.Parse("2020-03-08")
+            ["FormattedDate"] = DateTime.Parse("2020-03-08"),
+            ["MyName"] = "Phillip",
+            ["NestedData"] = "[=MyName] was replaced from this string"
         };
 
         public RenderTests()
@@ -41,7 +43,7 @@ namespace Sandra.Templating.Tests
         [InlineData("Single_Class_Match.txt", "Single_Class_Match.output.txt")]
         [InlineData("Types.txt", "Types.output.txt")]
         [InlineData("Single_Format.txt", "Single_Format.output.txt")]
-//        [InlineData("Multiple.txt", "Multiple.output.txt")]
+        [InlineData("Nested_Render.txt", "Nested_Render.output.txt")]
 //        [InlineData("Nested.txt", "Nested.output.txt")]
 //        [InlineData("Nested_Multiple.txt", "Nested_Multiple.output.txt")]
         public void TemplateTests(string input, string output)
