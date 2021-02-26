@@ -27,7 +27,7 @@ jobs:
 #        token: ${{secrets.github_token}}
 
     - name: Build with dotnet
-      run: dotnet build --configuration Release /p:AssemblyVersion=0.0.${{ env.GITHUB_RUN_NUMBER }},Version=0.0.${{ env.GITHUB_RUN_NUMBER }}
+      run: dotnet build --configuration Release /p:AssemblyVersion=0.0.${{ $GITHUB_RUN_NUMBER }},Version=0.0.${{ $GITHUB_RUN_NUMBER }}
 
     - name: Run unit tests
       run: dotnet test --configuration Release --no-build
