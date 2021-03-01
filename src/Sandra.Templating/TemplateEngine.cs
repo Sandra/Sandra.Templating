@@ -27,6 +27,7 @@ namespace Sandra.Templating
             processors.Add(PerformIfConditionSubstitutions);
             processors.Add(PerformForLoopSubstitutions);
             processors.Add(PerformReplacementSubstitutions);
+
             // TODO: Fix this hack with proper check for matches and replacing so it can infinitely replace
             processors.Add(PerformReplacementSubstitutions);
         }
