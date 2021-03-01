@@ -93,6 +93,11 @@ namespace Sandra.Templating
                         return string.Empty;
                     }
 
+                    if (rawValue.Value is bool booleanValue && !booleanValue)
+                    {
+                        return string.Empty;
+                    }
+
                     return Render(m.Groups["content"].Value, data);
                 }
             });

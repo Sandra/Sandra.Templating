@@ -1,0 +1,11 @@
+Begin conditional if test
+
+[if BooleanConditionTrue]
+I should render
+[end if]
+
+[if BooleanConditionFalse]
+I should NOT render
+[end if]
+
+End conditional if test

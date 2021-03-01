@@ -1,0 +1,9 @@
+Begin conditional if test
+
+
+I should render
+
+
+
+
+End conditional if test
