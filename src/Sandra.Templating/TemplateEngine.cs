@@ -53,12 +53,12 @@ namespace Sandra.Templating
 
                 var rawValue = data.FirstOrDefault(x => x.Key.ToLower().Equals(key.ToLower()));
                 
-                if (string.IsNullOrEmpty(value) && (rawValue.Value is bool boolValue || bool.TryParse(rawValue.Value.ToString(), out boolValue)))
+                if (string.IsNullOrEmpty(value) && rawValue.Value != null && (rawValue.Value is bool boolValue || bool.TryParse(rawValue.Value.ToString(), out boolValue)))
                 {
                     return boolValue ? m.Groups["true_variable"].Value : m.Groups["false_variable"].Value;
                 }
 
-                return rawValue.Value.Equals(value) ? m.Groups["true_variable"].Value : m.Groups["false_variable"].Value;
+                return rawValue.Value != null && rawValue.Value.Equals(value) ? m.Groups["true_variable"].Value : m.Groups["false_variable"].Value;
             });
         }
 
