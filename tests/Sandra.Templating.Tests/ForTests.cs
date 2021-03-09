@@ -35,7 +35,15 @@ namespace Sandra.Templating.Tests
                     ["name"] = "Kiwifruit"
                 }
             },
-            ["wrong_type"] = "not a list"
+            ["wrong_type"] = "not a list",
+            ["array_list"] = new[]
+            {
+                "One",
+                "Two",
+                "Three",
+                "Four",
+                "Five"
+            }
         };
 
         public ForTests()
@@ -46,6 +54,7 @@ namespace Sandra.Templating.Tests
         [Theory]
         [InlineData("Empty.txt", "Empty.output.txt")]
         [InlineData("5_Items.txt", "5_Items.output.txt")]
+        [InlineData("5_Items_array.txt", "5_Items_array.output.txt")]
         [InlineData("No_Key.txt", "No_Key.output.txt")]
         [InlineData("Wrong_Type.txt", "Wrong_Type.output.txt")]
         public void TemplateTests(string input, string output)

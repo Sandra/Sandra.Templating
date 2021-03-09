@@ -196,9 +196,19 @@ namespace Sandra.Templating
                         sb.AppendLine(mod.Value);
                     }
 
+                    var moduleScope = item.GetType().Module.ScopeName;
+                    var isModuleScope = moduleScope == "CommonLanguageRuntimeLibrary" || moduleScope.StartsWith("System");
+                    
                     if (item is IDictionary<string, object> banana)
                     {
                         sb.AppendLine(Render(content, banana));
+                    }
+                    else if (isModuleScope)
+                    {
+                        sb.AppendLine(Render(content, new Dictionary<string, object>
+                        {
+                            [name] = item
+                        }));
                     }
                     else
                     {
