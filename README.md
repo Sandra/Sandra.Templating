@@ -54,7 +54,21 @@ var result = engine.Render(template, data);
 Supports basic formatting.
 
 ```csharp
+// Data
+private readonly IDictionary<string, object> data = new()
+{
+    ["FormattedDate"] = DateTime.Parse("2020-03-08 13:45:03.534")
+};
+
+// Template
 [=FormattedDate:dd/MM/yyyy]
+[=FormattedDate:dd:MM:yyyy]
+[=FormattedDate:d MMM yyyy \a\t HH:mmtt]
+
+// Output
+08/03/2020
+08:03:2020
+8 Mar 2020 at 13:45pm
 ```
 
 ## IIf
