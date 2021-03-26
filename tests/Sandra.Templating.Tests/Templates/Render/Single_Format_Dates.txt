@@ -1,3 +1,3 @@
 [=FormattedDate:dd/MM/yyyy]
 [=FormattedDate:dd:MM:yyyy]
-[=FormattedDate:d MMM yyyy \a\t HH:mmtt]
+[=FormattedDate:d MMM yyyy \a\t HH:mm]
