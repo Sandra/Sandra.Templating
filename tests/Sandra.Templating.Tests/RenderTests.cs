@@ -45,8 +45,7 @@ namespace Sandra.Templating.Tests
         [InlineData("Single_Format.txt", "Single_Format.output.txt")]
         [InlineData("Single_Format_Dates.txt", "Single_Format_Dates.output.txt")]
         [InlineData("Nested_Render.txt", "Nested_Render.output.txt")]
-//        [InlineData("Nested.txt", "Nested.output.txt")]
-//        [InlineData("Nested_Multiple.txt", "Nested_Multiple.output.txt")]
+        [InlineData("Format_On_Same_Line.txt", "Format_On_Same_Line.output.txt")]
         public void TemplateTests(string input, string output)
         {
             var template = File.ReadAllText($"{Path}{input}");
