@@ -1,0 +1,11 @@
+Begin single if test
+
+[if empty_collection]
+This should not display
+[end if]
+
+[if non_empty_collection]
+This should display
+[end if]
+
+End single if test

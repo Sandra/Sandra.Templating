@@ -94,6 +94,11 @@ namespace Sandra.Templating
                         return string.Empty;
                     }
 
+                    if (rawValue.Value is ICollection { Count: 0 })
+                    {
+                        return string.Empty;
+                    }
+
                     if ((rawValue.Value is bool boolValue || bool.TryParse(rawValue.Value.ToString(), out boolValue)) && !boolValue)
                     {
                         return string.Empty;

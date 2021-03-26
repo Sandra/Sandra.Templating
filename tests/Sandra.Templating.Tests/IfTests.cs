@@ -23,7 +23,9 @@ namespace Sandra.Templating.Tests
             ["UPPER_case"] = "Variable name and template name dont match but test should pass",
             ["Banana"] = "Yellow",
             ["BooleanConditionTrue"] = true,
-            ["BooleanConditionFalse"] = false
+            ["BooleanConditionFalse"] = false,
+            ["empty_collection"] = new string[] {},
+            ["non_empty_collection"] = new string[] {"Item"}
         };
 
         public IfTests()
@@ -40,6 +42,7 @@ namespace Sandra.Templating.Tests
         [InlineData("Single_Casing.txt", "Single_Casing.output.txt")]
         [InlineData("Conditional.txt", "Conditional.output.txt")]
         [InlineData("BoolConditional.txt", "BoolConditional.output.txt")]
+        [InlineData("Value_Is_Collection_With_No_Items.txt", "Value_Is_Collection_With_No_Items.output.txt")]
         public void TemplateTests(string input, string output)
         {
             var template = File.ReadAllText($"{Path}{input}");
