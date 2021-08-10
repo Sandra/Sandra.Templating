@@ -25,7 +25,8 @@ namespace Sandra.Templating.Tests
             ["BooleanConditionTrue"] = true,
             ["BooleanConditionFalse"] = false,
             ["empty_collection"] = new string[] {},
-            ["non_empty_collection"] = new string[] {"Item"}
+            ["non_empty_collection"] = new string[] {"Item"},
+            ["null_variable"] = null!
         };
 
         public IfTests()
@@ -34,19 +35,20 @@ namespace Sandra.Templating.Tests
         }
         
         [Theory]
-        [InlineData("Single.txt", "Single.output.txt")]
-        [InlineData("Single_No_Match.txt", "Single_No_Match.output.txt")]
-        [InlineData("Multiple.txt", "Multiple.output.txt")]
-        [InlineData("Nested.txt", "Nested.output.txt")]
-        [InlineData("Nested_Multiple.txt", "Nested_Multiple.output.txt")]
-        [InlineData("Single_Casing.txt", "Single_Casing.output.txt")]
-        [InlineData("Conditional.txt", "Conditional.output.txt")]
-        [InlineData("BoolConditional.txt", "BoolConditional.output.txt")]
-        [InlineData("Value_Is_Collection_With_No_Items.txt", "Value_Is_Collection_With_No_Items.output.txt")]
-        public void TemplateTests(string input, string output)
+        [InlineData("Single")]
+        [InlineData("Single_No_Match")]
+        [InlineData("Multiple")]
+        [InlineData("Nested")]
+        [InlineData("Nested_Multiple")]
+        [InlineData("NullValue")]
+        [InlineData("Single_Casing")]
+        [InlineData("Conditional")]
+        [InlineData("BoolConditional")]
+        [InlineData("Value_Is_Collection_With_No_Items")]
+        public void TemplateTests(string filename)
         {
-            var template = File.ReadAllText($"{Path}{input}");
-            var expected = File.ReadAllText($"{Path}{output}");
+            var template = File.ReadAllText($"{Path}{filename}.txt");
+            var expected = File.ReadAllText($"{Path}{filename}.output.txt");
 
             var actual = engine.Render(template, data);
 

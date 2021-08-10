@@ -88,6 +88,11 @@ namespace Sandra.Templating
                 {
                     var rawValue = data.FirstOrDefault(x => x.Key.ToLower().Equals(content.ToLower()));
 
+                    if (rawValue.Value == null)
+                    {
+                        return string.Empty;
+                    }
+                    
                     if (string.IsNullOrEmpty(rawValue.Key))
                     {
                         return string.Empty;

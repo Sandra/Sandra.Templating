@@ -1,0 +1,7 @@
+Begin single if test
+
+[if null_variable]
+It should not render this.
+[end if]
+
+End single if test
