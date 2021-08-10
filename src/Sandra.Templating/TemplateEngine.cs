@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -23,9 +22,9 @@ namespace Sandra.Templating
 
         public TemplateEngine()
         {
+            processors.Add(PerformForLoopSubstitutions);
             processors.Add(PerformTernarySubstitutions);
             processors.Add(PerformIfConditionSubstitutions);
-            processors.Add(PerformForLoopSubstitutions);
             processors.Add(PerformReplacementSubstitutions);
 
             // TODO: Fix this hack with proper check for matches and replacing so it can infinitely replace
@@ -178,7 +177,7 @@ namespace Sandra.Templating
                 var startIndex = $"[for {name} in {key}]".Length;
                 var endIndex = m.Value.Length - "[end for]".Length - startIndex;
 
-                var content = m.Value.Substring(startIndex, endIndex).Replace($"[={name}.", "[=");
+                var content = m.Value.Substring(startIndex, endIndex).Replace($"{name}.", string.Empty);
                 var splitResult = ForSplit.Match(content);
                 var mod = new LoopMod();
 

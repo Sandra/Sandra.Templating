@@ -43,8 +43,33 @@ namespace Sandra.Templating.Tests
                 "Three",
                 "Four",
                 "Five"
+            },
+            ["Names"] = new List<TestClass>
+            {
+                new()
+                {
+                    Name = "Phillip",
+                    ShowName = true
+                },
+                new()
+                {
+                    Name = "Nigel",
+                    ShowName = false
+                },
+                new()
+                {
+                    Name = "Steven",
+                    ShowName = true
+                }
             }
         };
+
+        private class TestClass
+        {
+            public bool ShowName { get; set; }
+
+            public string Name { get; set; }
+        }
 
         public ForTests()
         {
@@ -52,15 +77,16 @@ namespace Sandra.Templating.Tests
         }
 
         [Theory]
-        [InlineData("Empty.txt", "Empty.output.txt")]
-        [InlineData("5_Items.txt", "5_Items.output.txt")]
-        [InlineData("5_Items_array.txt", "5_Items_array.output.txt")]
-        [InlineData("No_Key.txt", "No_Key.output.txt")]
-        [InlineData("Wrong_Type.txt", "Wrong_Type.output.txt")]
-        public void TemplateTests(string input, string output)
+        [InlineData("Nested_With_Condition")]
+        [InlineData("Empty")]
+        [InlineData("5_Items")]
+        [InlineData("5_Items_array")]
+        [InlineData("No_Key")]
+        [InlineData("Wrong_Type")]
+        public void TemplateTests(string filename)
         {
-            var template = File.ReadAllText($"{TextPath}{input}");
-            var expected = File.ReadAllText($"{TextPath}{output}");
+            var template = File.ReadAllText($"{TextPath}{filename}.txt");
+            var expected = File.ReadAllText($"{TextPath}{filename}.output.txt");
 
             var actual = engine.Render(template, data);
 

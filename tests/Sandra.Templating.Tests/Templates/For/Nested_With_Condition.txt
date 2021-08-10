@@ -1,0 +1,13 @@
+This list contains 3 items with 2 that should be displayed.
+
+[for item in Names]
+
+    This should have sub items...
+    
+    [if item.ShowName]
+        Name = [=item.Name]
+    [end if]
+
+[end for]
+
+End list
