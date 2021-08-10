@@ -6,8 +6,8 @@ This list contains 1 item, with 5 sub items.
     
     [=item.Name]
     
-    [for subItem in item.SecondLevel]
-        [=subItem.Name]
+    [for sub in item.SecondLevel]
+        [=sub.Name]
     [end for]
 
 [end for]

@@ -31,7 +31,7 @@ namespace Sandra.Templating
                 Regex(@"(?:\[iif[ ]*(?<variable>[a-zA-Z0-9_]+)[ =]*(?<value>[a-zA-Z0-9]*)[ \?]*(?<fq>['""]{1})(?<true_variable>(?:(?!\k<fq>).)+)\k<fq>[ :]+(?<sq>['""]{1})(?<false_variable>(?:(?!\k<sq>).)*)\k<sq>[ ]*\])",
                       Options);
 
-        private readonly IList<Func<string, IDictionary<string, object>, string>> processors = new List<Func<string, IDictionary<string, object>, string>>();
+        private readonly IList<Func<string, IDictionary<string, object>, bool, string>> processors = new List<Func<string, IDictionary<string, object>, bool, string>>();
 
         public TemplateEngine()
         {
@@ -44,19 +44,19 @@ namespace Sandra.Templating
             processors.Add(PerformReplacementSubstitutions);
         }
 
-        public string Render(string template, IDictionary<string, object> data)
+        public string Render(string template, IDictionary<string, object> data, bool preserveContent = false)
         {
             var result = template;
 
             foreach (var processor in processors)
             {
-                result = processor.Invoke(result, data);
+                result = processor.Invoke(result, data, preserveContent);
             }
 
             return result;
         }
 
-        private string PerformTernarySubstitutions(string template, IDictionary<string, object> data)
+        private string PerformTernarySubstitutions(string template, IDictionary<string, object> data, bool preserveContent = false)
         {
             return RenderTernaryRegex.Replace(template, m =>
             {
@@ -74,7 +74,7 @@ namespace Sandra.Templating
             });
         }
 
-        private string PerformIfConditionSubstitutions(string template, IDictionary<string, object> data)
+        private string PerformIfConditionSubstitutions(string template, IDictionary<string, object> data, bool preserveContent = false)
         {
             return IfConditionRegex.Replace(template, m =>
             {
@@ -126,7 +126,7 @@ namespace Sandra.Templating
             });
         }
 
-        private string PerformReplacementSubstitutions(string template, IDictionary<string, object> data)
+        private string PerformReplacementSubstitutions(string template, IDictionary<string, object> data, bool preserveContent = false)
         {
             return RenderRegex.Replace(template, m =>
             {
@@ -157,7 +157,7 @@ namespace Sandra.Templating
                     return string.Format(format, rawValue.Value);
                 }
 
-                return string.Empty;
+                return preserveContent ? m.Value : string.Empty;
             });
         }
 
@@ -178,7 +178,7 @@ namespace Sandra.Templating
             return "{0:" + format + "}";
         }
 
-        private string PerformForLoopSubstitutions(string template, IDictionary<string, object> data)
+        private string PerformForLoopSubstitutions(string template, IDictionary<string, object> data, bool preserveContent = false)
         {
             return ForRegex.Replace(template, m =>
             {
@@ -202,7 +202,7 @@ namespace Sandra.Templating
                 var startIndex = $"[for {name} in {key}]".Length;
                 var endIndex = m.Value.Length - "[end for]".Length - startIndex;
 
-                var content = m.Value.Substring(startIndex, endIndex); //.Replace($"{name}.", string.Empty);
+                var content = m.Value.Substring(startIndex, endIndex).Replace($"{name}.", string.Empty);
                 var splitResult = ForSplit.Match(content);
                 var mod = new LoopMod();
 
@@ -228,30 +228,22 @@ namespace Sandra.Templating
                     var moduleScope = item.GetType().Module.ScopeName;
                     var isModuleScope = moduleScope == "CommonLanguageRuntimeLibrary" || moduleScope.StartsWith("System");
 
-                    var result = string.Empty;
-
                     if (item is IDictionary<string, object> banana)
                     {
-                        content = content.Replace($"{name}.", string.Empty);
-                        result = Render(content, banana);
+                        sb.Append(Render(content, banana, true));
                     }
                     else if (isModuleScope)
                     {
-                        content = content.Replace($"{name}.", string.Empty);
-                        result = Render(content, new Dictionary<string, object>
+                        sb.Append(Render(content, new Dictionary<string, object>
                         {
                             [name] = item
-                        });
+                        }, true));
                     }
                     else
                     {
-                        var itemAsDic = Convert(item, data, name);
-                        result = Render(content, itemAsDic);
+                        var itemAsDic = Convert(item, data);
+                        sb.Append(Render(content, itemAsDic, true));
                     }
-
-                    //result = Render(result, data);
-
-                    sb.Append(result);
 
                     index++;
                 }
@@ -260,21 +252,7 @@ namespace Sandra.Templating
             });
         }
 
-        private IDictionary<string, object> Convert(object item, IDictionary<string, object> data, string name)
-        {
-            var properties = item.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
-
-            var result = data.ToDictionary(x => x.Key, x => x.Value);
-
-            foreach (var propertyInfo in properties)
-            {
-                result.Add($"{name}.{propertyInfo.Name}", propertyInfo.GetValue(item));
-            }
-
-            return result;
-        }
-
-        private static IDictionary<string, object> Convert(object item)
+        private IDictionary<string, object> Convert(object item, IDictionary<string, object> data)
         {
             var properties = item.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
 
@@ -282,7 +260,7 @@ namespace Sandra.Templating
 
             foreach (var propertyInfo in properties)
             {
-                result.Add(propertyInfo.Name, propertyInfo.GetValue(item));
+                result.Add($"{propertyInfo.Name}", propertyInfo.GetValue(item));
             }
 
             return result;
