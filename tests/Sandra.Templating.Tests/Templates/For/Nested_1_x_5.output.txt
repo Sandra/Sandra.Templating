@@ -1,15 +1,29 @@
 This list contains 1 item, with 5 sub items.
 
-[for item in items]
+
 
     This should have sub items...
     
-    [=item.name]
+    Level 1a
     
-    [for sub_item in item.items
-        [=sub_item.name]
-    [end for]
+    
+        Level 2a
+    
+        Level 2b
+    
 
-[end for]
+
+
+    This should have sub items...
+    
+    Level 1b
+    
+    
+        Level 2a
+    
+        Level 2b
+    
+
+
 
 End list contains 1 item, with 5 sub items.

@@ -3,18 +3,13 @@ Should render all 5 items
 
     One<br>
 
-
     Two<br>
-
 
     Three<br>
 
-
     Four<br>
 
-
     Five<br>
-
 
 
 End should render all 5 items...

@@ -1,0 +1,7 @@
+Should render 3 items with a label prefix
+
+[for item in Names]
+    [=LabelName] [=item.name]<br>
+[end for]
+
+End...

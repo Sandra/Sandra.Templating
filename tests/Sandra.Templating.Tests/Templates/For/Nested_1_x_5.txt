@@ -1,13 +1,13 @@
 This list contains 1 item, with 5 sub items.
 
-[for item in items]
+[for item in TopLevel]
 
     This should have sub items...
     
-    [=item.name]
+    [=item.Name]
     
-    [for sub_item in item.items
-        [=sub_item.name]
+    [for subItem in item.SecondLevel]
+        [=subItem.Name]
     [end for]
 
 [end for]

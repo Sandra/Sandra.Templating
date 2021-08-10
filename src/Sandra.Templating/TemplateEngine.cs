@@ -12,12 +12,25 @@ namespace Sandra.Templating
     {
         private static readonly RegexOptions Options = RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant;
 
-        private static readonly Regex IfConditionRegex = new Regex(@"(?s)\[if\s+(?<if>[^][]+)](?<content>(?>(?:(?!\[if\s|\[end\ if]).)+|(?<-open>)\[end\ if]|(?<open>)\[if\s+(?<if>[^][]+)])*(?(open)(?!)))\[end\ if]", Options);
-        private static readonly Regex ForRegex = new Regex(@"(?s)\[for (?<name>[^][]+) in (?<variable>[^][]+)](?>(?:(?!\[for\s|\[end\ for]).)+|(?<close-open>)\[end\ for]|(?<open>)\[for\s+(?:[^][]+)])*(?(open)(?!))\[end\ for]", Options);
+        private static readonly Regex IfConditionRegex =
+            new Regex(@"(?s)\[if\s+(?<if>[^][]+)](?<content>(?>(?:(?!\[if\s|\[end\ if]).)+|(?<-open>)\[end\ if]|(?<open>)\[if\s+(?<if>[^][]+)])*(?(open)(?!)))\[end\ if]", Options);
+
+        private static readonly Regex ForRegex =
+            new
+                Regex(@"(?s)\[for (?<name>[^][]+) in (?<variable>[^][]+)](?>(?:(?!\[for\s|\[end\ for]).)+|(?<close-open>)\[end\ for]|(?<open>)\[for\s+(?:[^][]+)])*(?(open)(?!))\[end\ for]",
+                      Options);
+
         private static readonly Regex RenderRegex = new Regex(@"(?:\[\=)(?<key>[a-zA-Z0-9\.]+)(?:\:(?<format>[a-zA-Z-0-9\\\/\-_\.\: ]+))?(?:\])", Options);
-        private static readonly Regex ForSplit = new Regex(@"(?s)\[split\=(?<mod>\d+)](?<value>(?>(?:(?!\[split\s|\[split\ end]).)+|(?<-open>)\[split\ end]|(?<open>)\[split\=(?<mod>\d+)])*(?(open)(?!)))\[split\ end]", Options);
-        private static readonly Regex RenderTernaryRegex = new Regex(@"(?:\[iif[ ]*(?<variable>[a-zA-Z0-9_]+)[ =]*(?<value>[a-zA-Z0-9]*)[ \?]*(?<fq>['""]{1})(?<true_variable>(?:(?!\k<fq>).)+)\k<fq>[ :]+(?<sq>['""]{1})(?<false_variable>(?:(?!\k<sq>).)*)\k<sq>[ ]*\])", Options);
- 
+
+        private static readonly Regex ForSplit =
+            new Regex(@"(?s)\[split\=(?<mod>\d+)](?<value>(?>(?:(?!\[split\s|\[split\ end]).)+|(?<-open>)\[split\ end]|(?<open>)\[split\=(?<mod>\d+)])*(?(open)(?!)))\[split\ end]",
+                      Options);
+
+        private static readonly Regex RenderTernaryRegex =
+            new
+                Regex(@"(?:\[iif[ ]*(?<variable>[a-zA-Z0-9_]+)[ =]*(?<value>[a-zA-Z0-9]*)[ \?]*(?<fq>['""]{1})(?<true_variable>(?:(?!\k<fq>).)+)\k<fq>[ :]+(?<sq>['""]{1})(?<false_variable>(?:(?!\k<sq>).)*)\k<sq>[ ]*\])",
+                      Options);
+
         private readonly IList<Func<string, IDictionary<string, object>, string>> processors = new List<Func<string, IDictionary<string, object>, string>>();
 
         public TemplateEngine()
@@ -51,7 +64,7 @@ namespace Sandra.Templating
                 var value = m.Groups["value"]?.Value;
 
                 var rawValue = data.FirstOrDefault(x => x.Key.ToLower().Equals(key.ToLower()));
-                
+
                 if (string.IsNullOrEmpty(value) && rawValue.Value != null && (rawValue.Value is bool boolValue || bool.TryParse(rawValue.Value.ToString(), out boolValue)))
                 {
                     return boolValue ? m.Groups["true_variable"].Value : m.Groups["false_variable"].Value;
@@ -92,7 +105,7 @@ namespace Sandra.Templating
                     {
                         return string.Empty;
                     }
-                    
+
                     if (string.IsNullOrEmpty(rawValue.Key))
                     {
                         return string.Empty;
@@ -122,22 +135,29 @@ namespace Sandra.Templating
                 var keySplit = key.Split('.');
                 var keyPrefix = keySplit.First();
 
-                var rawValue = data.FirstOrDefault(x => x.Key.ToLower().Equals(keyPrefix.ToLower()));
+                var rawValue = data.FirstOrDefault(x => x.Key.Equals(key, StringComparison.InvariantCultureIgnoreCase));
 
-                if (string.IsNullOrEmpty(rawValue.Key))
+                if (!string.IsNullOrEmpty(rawValue.Key))
                 {
-                    return string.Empty;
+                    return string.Format(format, rawValue.Value);
                 }
 
-                // Assume we need to take the value of a property
-                if (keySplit.Length > 1)
-                {
-                    var value = rawValue.Value.GetType().GetProperty(keySplit.Last())?.GetValue(rawValue.Value).ToString();
+                rawValue = data.FirstOrDefault(x => x.Key.Equals(keyPrefix, StringComparison.InvariantCultureIgnoreCase));
 
-                    return string.Format(format, value);
+                if (!string.IsNullOrEmpty(rawValue.Key))
+                {
+                    // Assume we need to take the value of a property
+                    if (keySplit.Length > 1)
+                    {
+                        var value = rawValue.Value.GetType().GetProperty(keySplit.Last())?.GetValue(rawValue.Value).ToString();
+
+                        return string.Format(format, value);
+                    }
+
+                    return string.Format(format, rawValue.Value);
                 }
 
-                return string.Format(format, rawValue.Value);
+                return string.Empty;
             });
         }
 
@@ -182,7 +202,7 @@ namespace Sandra.Templating
                 var startIndex = $"[for {name} in {key}]".Length;
                 var endIndex = m.Value.Length - "[end for]".Length - startIndex;
 
-                var content = m.Value.Substring(startIndex, endIndex).Replace($"{name}.", string.Empty);
+                var content = m.Value.Substring(startIndex, endIndex); //.Replace($"{name}.", string.Empty);
                 var splitResult = ForSplit.Match(content);
                 var mod = new LoopMod();
 
@@ -207,29 +227,51 @@ namespace Sandra.Templating
 
                     var moduleScope = item.GetType().Module.ScopeName;
                     var isModuleScope = moduleScope == "CommonLanguageRuntimeLibrary" || moduleScope.StartsWith("System");
-                    
+
+                    var result = string.Empty;
+
                     if (item is IDictionary<string, object> banana)
                     {
-                        sb.AppendLine(Render(content, banana));
+                        content = content.Replace($"{name}.", string.Empty);
+                        result = Render(content, banana);
                     }
                     else if (isModuleScope)
                     {
-                        sb.AppendLine(Render(content, new Dictionary<string, object>
+                        content = content.Replace($"{name}.", string.Empty);
+                        result = Render(content, new Dictionary<string, object>
                         {
                             [name] = item
-                        }));
+                        });
                     }
                     else
                     {
-                        var itemAsDic = Convert(item);
-                        sb.AppendLine(Render(content, itemAsDic));
+                        var itemAsDic = Convert(item, data, name);
+                        result = Render(content, itemAsDic);
                     }
+
+                    //result = Render(result, data);
+
+                    sb.Append(result);
 
                     index++;
                 }
 
                 return sb.ToString();
             });
+        }
+
+        private IDictionary<string, object> Convert(object item, IDictionary<string, object> data, string name)
+        {
+            var properties = item.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
+
+            var result = data.ToDictionary(x => x.Key, x => x.Value);
+
+            foreach (var propertyInfo in properties)
+            {
+                result.Add($"{name}.{propertyInfo.Name}", propertyInfo.GetValue(item));
+            }
+
+            return result;
         }
 
         private static IDictionary<string, object> Convert(object item)

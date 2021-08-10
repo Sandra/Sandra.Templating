@@ -46,30 +46,29 @@ namespace Sandra.Templating.Tests
             },
             ["Names"] = new List<TestClass>
             {
-                new()
+                new(true, "Phillip"),
+                new(false, "Nigel"),
+                new(true, "Steven")
+            },
+            ["LabelName"] = "Name: ",
+            ["TopLevel"] = new List<Parent>
+            {
+                new ("Level 1a", new List<Child>
                 {
-                    Name = "Phillip",
-                    ShowName = true
-                },
-                new()
+                    new (1, "Level 2a"),
+                    new (2, "Level 2b")
+                }),
+                new ("Level 1b", new List<Child>
                 {
-                    Name = "Nigel",
-                    ShowName = false
-                },
-                new()
-                {
-                    Name = "Steven",
-                    ShowName = true
-                }
+                    new (1, "Level 2a"),
+                    new (2, "Level 2b")
+                })
             }
         };
 
-        private class TestClass
-        {
-            public bool ShowName { get; set; }
-
-            public string Name { get; set; }
-        }
+        private record Parent(string Name, List<Child> SecondLevel);
+        private record Child(int Id, string Name);
+        private record TestClass(bool ShowName, string Name);
 
         public ForTests()
         {
@@ -77,10 +76,12 @@ namespace Sandra.Templating.Tests
         }
 
         [Theory]
-        [InlineData("Nested_With_Condition")]
-        [InlineData("Empty")]
+        [InlineData("3_Items_With_Parent_Reference")]
         [InlineData("5_Items")]
         [InlineData("5_Items_array")]
+        [InlineData("Empty")]
+        [InlineData("Nested_1_x_5")]
+        [InlineData("Nested_With_Condition")]
         [InlineData("No_Key")]
         [InlineData("Wrong_Type")]
         public void TemplateTests(string filename)

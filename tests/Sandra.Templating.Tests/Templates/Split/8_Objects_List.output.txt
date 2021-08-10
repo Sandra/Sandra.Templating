@@ -7,12 +7,10 @@ Should render all 8 items split after every 2.
     Bob
     </li>
 
-
     
     <li>
     Fred
     </li>
-
 
 </ol>
 <ol>
@@ -23,12 +21,10 @@ Should render all 8 items split after every 2.
     James
     </li>
 
-
     
     <li>
     John
     </li>
-
 
 </ol>
 <ol>
@@ -39,12 +35,10 @@ Should render all 8 items split after every 2.
     Dan
     </li>
 
-
     
     <li>
     Peter
     </li>
-
 
 </ol>
 <ol>
@@ -55,12 +49,10 @@ Should render all 8 items split after every 2.
     Zack
     </li>
 
-
     
     <li>
     Sam
     </li>
-
 
 </ol>
 

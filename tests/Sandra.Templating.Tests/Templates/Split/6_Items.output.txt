@@ -8,18 +8,15 @@ Should render all 6 items
     Banana
     </td>
 
-
     
     <td>
     Apple
     </td>
 
-
     
     <td>
     Grape
     </td>
-
 
 </tr>
 <tr>
@@ -30,18 +27,15 @@ Should render all 6 items
     Watermelon
     </td>
 
-
     
     <td>
     Kiwifruit
     </td>
 
-
     
     <td>
     Peach
     </td>
-
 
 </tr>
 </table>
