@@ -11,7 +11,9 @@ namespace Sandra.Templating.Tests
         private readonly IDictionary<string, object> data = new Dictionary<string, object>
         {
             ["interval"] = "d",
-            ["IsEnabled"] = true
+            ["IsEnabled"] = true,
+            ["Colour"] = "#ffffff",
+            ["IsDisabled"] = false
         };
 
         public IIfTests()
@@ -20,16 +22,17 @@ namespace Sandra.Templating.Tests
         }
         
         [Theory]
-        [InlineData("BooleanCheck.txt", "BooleanCheck.output.txt")]
-        [InlineData("Single-True.txt", "Single-True.output.txt")]
-        [InlineData("Single-False.txt", "Single-False.output.txt")]
-        [InlineData("Single-True-Single-Quotes.txt", "Single-True-Single-Quotes.output.txt")]
-        [InlineData("Single-True-Mix-Quotes.txt", "Single-True-Mix-Quotes.output.txt")]
-        [InlineData("Multiple-Usage-Mix-Quotes.txt", "Multiple-Usage-Mix-Quotes.output.txt")]
-        public void TemplateTests(string input, string output)
+        [InlineData("BooleanCheck")]
+        [InlineData("Check_With_Variable")]
+        [InlineData("Single-True")]
+        [InlineData("Single-False")]
+        [InlineData("Single-True-Single-Quotes")]
+        [InlineData("Single-True-Mix-Quotes")]
+        [InlineData("Multiple-Usage-Mix-Quotes")]
+        public void TemplateTests(string filename)
         {
-            var template = File.ReadAllText($"{Path}{input}");
-            var expected = File.ReadAllText($"{Path}{output}");
+            var template = File.ReadAllText($"{Path}{filename}.txt");
+            var expected = File.ReadAllText($"{Path}{filename}.output.txt");
 
             var actual = engine.Render(template, data);
 

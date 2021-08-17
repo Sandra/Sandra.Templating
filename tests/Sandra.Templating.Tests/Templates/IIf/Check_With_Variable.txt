@@ -1,0 +1,3 @@
+[iif IsEnabled?"#000000":"[=Colour]"]
+[iif IsDisabled?"#000000":"[=Colour]"]
+[iif DoesNotExist?"#000000":"[=Colour]"]

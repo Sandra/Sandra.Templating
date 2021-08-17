@@ -10,26 +10,13 @@ namespace Sandra.Templating
 {
     public class TemplateEngine
     {
-        private static readonly RegexOptions Options = RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant;
+        private const RegexOptions Options = RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant;
 
-        private static readonly Regex IfConditionRegex =
-            new Regex(@"(?s)\[if\s+(?<if>[^][]+)](?<content>(?>(?:(?!\[if\s|\[end\ if]).)+|(?<-open>)\[end\ if]|(?<open>)\[if\s+(?<if>[^][]+)])*(?(open)(?!)))\[end\ if]", Options);
-
-        private static readonly Regex ForRegex =
-            new
-                Regex(@"(?s)\[for (?<name>[^][]+) in (?<variable>[^][]+)](?>(?:(?!\[for\s|\[end\ for]).)+|(?<close-open>)\[end\ for]|(?<open>)\[for\s+(?:[^][]+)])*(?(open)(?!))\[end\ for]",
-                      Options);
-
-        private static readonly Regex RenderRegex = new Regex(@"(?:\[\=)(?<key>[a-zA-Z0-9\.]+)(?:\:(?<format>[a-zA-Z-0-9\\\/\-_\.\: ]+))?(?:\])", Options);
-
-        private static readonly Regex ForSplit =
-            new Regex(@"(?s)\[split\=(?<mod>\d+)](?<value>(?>(?:(?!\[split\s|\[split\ end]).)+|(?<-open>)\[split\ end]|(?<open>)\[split\=(?<mod>\d+)])*(?(open)(?!)))\[split\ end]",
-                      Options);
-
-        private static readonly Regex RenderTernaryRegex =
-            new
-                Regex(@"(?:\[iif[ ]*(?<variable>[a-zA-Z0-9_]+)[ =]*(?<value>[a-zA-Z0-9]*)[ \?]*(?<fq>['""]{1})(?<true_variable>(?:(?!\k<fq>).)+)\k<fq>[ :]+(?<sq>['""]{1})(?<false_variable>(?:(?!\k<sq>).)*)\k<sq>[ ]*\])",
-                      Options);
+        private static readonly Regex IfConditionRegex = new(@"(?s)\[if\s+(?<if>[^][]+)](?<content>(?>(?:(?!\[if\s|\[end\ if]).)+|(?<-open>)\[end\ if]|(?<open>)\[if\s+(?<if>[^][]+)])*(?(open)(?!)))\[end\ if]", Options);
+        private static readonly Regex ForRegex = new(@"(?s)\[for (?<name>[^][]+) in (?<variable>[^][]+)](?>(?:(?!\[for\s|\[end\ for]).)+|(?<close-open>)\[end\ for]|(?<open>)\[for\s+(?:[^][]+)])*(?(open)(?!))\[end\ for]", Options);
+        private static readonly Regex RenderRegex = new(@"(?:\[\=)(?<key>[a-zA-Z0-9\.]+)(?:\:(?<format>[a-zA-Z-0-9\\\/\-_\.\: ]+))?(?:\])", Options);
+        private static readonly Regex ForSplit = new(@"(?s)\[split\=(?<mod>\d+)](?<value>(?>(?:(?!\[split\s|\[split\ end]).)+|(?<-open>)\[split\ end]|(?<open>)\[split\=(?<mod>\d+)])*(?(open)(?!)))\[split\ end]", Options);
+        private static readonly Regex RenderTernaryRegex = new(@"(?:\[iif[ ]*(?<variable>[a-zA-Z0-9_]+)[ =]*(?<value>[a-zA-Z0-9]*)[ \?]*(?<fq>['""]{1})(?<true_variable>(?:(?!\k<fq>).)+)\k<fq>[ :]+(?<sq>['""]{1})(?<false_variable>(?:(?!\k<sq>).)*)\k<sq>[ ]*\])", Options);
 
         private readonly IList<Func<string, IDictionary<string, object>, bool, string>> processors = new List<Func<string, IDictionary<string, object>, bool, string>>();
 
@@ -95,7 +82,7 @@ namespace Sandra.Templating
                         return string.Empty;
                     }
 
-                    return Render(m.Groups["content"].Value, data);
+                    return Render(m.Groups["content"].Value, data, preserveContent);
                 }
                 else
                 {
@@ -121,7 +108,7 @@ namespace Sandra.Templating
                         return string.Empty;
                     }
 
-                    return Render(m.Groups["content"].Value, data);
+                    return Render(m.Groups["content"].Value, data, preserveContent);
                 }
             });
         }
