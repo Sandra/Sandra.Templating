@@ -21,7 +21,7 @@ namespace Sandra.Templating.Tests
 
             var template = "[if DoesNotExist]This should render[end if]Only Thing";
 
-            var result = new TemplateEngine().Render(template, data);
+            var result = new TemplateEngine().Render(template, data!);
 
             result.Should().Be("Only Thing");
         }
@@ -40,7 +40,7 @@ namespace Sandra.Templating.Tests
 
             var template = "[iif DoesNotExist?'this':'that']";
 
-            var result = new TemplateEngine().Render(template, data);
+            var result = new TemplateEngine().Render(template, data!);
 
             result.Should().Be("that");
         }

@@ -21,7 +21,7 @@ namespace Sandra.Templating.Tests.Templates
 
             var template = "[iif BooleanTrue?'Hello World':'fail']";
 
-            var result = new TemplateEngine().Render(template, data);
+            var result = new TemplateEngine().Render(template, data!);
 
             result.Should().Be("Hello World");
         }
@@ -40,7 +40,7 @@ namespace Sandra.Templating.Tests.Templates
 
             var template = "[if BooleanTrue]This should render[end if]";
 
-            var result = new TemplateEngine().Render(template, data);
+            var result = new TemplateEngine().Render(template, data!);
 
             result.Should().Be("This should render");
         }
