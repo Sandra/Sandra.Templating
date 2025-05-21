@@ -1,2 +1,3 @@
 [=LongText:truncate(10)]
 [=LongText:truncate(20)]
+[=ShortText:truncate(10)]

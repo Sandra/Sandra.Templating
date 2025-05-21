@@ -32,7 +32,8 @@ namespace Sandra.Templating.Tests
             ["FormattedDate"] = DateTime.Parse("2020-03-08 13:45:03.534"),
             ["MyName"] = "Phillip",
             ["NestedData"] = "[=MyName] was replaced from this string",
-            ["LongText"] = "This is a very long text that should be truncated in the test"
+            ["LongText"] = "This is a very long text that should be truncated in the test",
+            ["ShortText"] = "Short"
         };
 
         public RenderTests()
