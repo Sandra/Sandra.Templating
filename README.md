@@ -44,6 +44,7 @@ var result = engine.Render(template, data);
 - If (nested supported)
 - IIf (ternary rendering based on a condition)
 - Render
+- Truncate (limiting text length)
 
 ## Can render: 
 
@@ -90,9 +91,33 @@ var data = new Dictionary<string, object>
 Would render:
 
 > A fruit is I
+
+## Truncate
+
+You can limit the length of text using the truncate format:
+
+```csharp
+// Data
+private readonly IDictionary<string, object> data = new()
+{
+    ["LongDescription"] = "This is a very long description that might need truncation in some contexts."
+};
+
+// Template
+[=LongDescription:truncate(20)]
+[=LongDescription:truncate(10)]
+
+// Output
+This is a very long
+This is a 
+```
+
+The truncate format simply cuts the text at the specified length.
     
 ## Tested on:
 
 - .NET 4.5.2
 - .NET Core 2.2
 - .NET Core 3.1
+- .NET 6.0
+- .NET 9.0

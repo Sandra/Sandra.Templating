@@ -13,10 +13,11 @@ namespace Sandra.Templating
         private const RegexOptions Options = RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant;
 
         private static readonly Regex IfConditionRegex = new(@"(?s)\[if\s+(?<if>[^][]+)](?<content>(?>(?:(?!\[if\s|\[end\ if]).)+|(?<-open>)\[end\ if]|(?<open>)\[if\s+(?<if>[^][]+)])*(?(open)(?!)))\[end\ if]", Options);
-        private static readonly Regex ForRegex = new(@"(?s)\[for (?<name>[^][]+) in (?<variable>[^][]+)](?>(?:(?!\[for\s|\[end\ for]).)+|(?<close-open>)\[end\ for]|(?<open>)\[for\s+(?:[^][]+)])*(?(open)(?!))\[end\ for]", Options);
-        private static readonly Regex RenderRegex = new(@"(?:\[\=)(?<key>[a-zA-Z0-9\.]+)(?:\:(?<format>[a-zA-Z-0-9\\\/\-_\.\: ]+))?(?:\])", Options);
+        private static readonly Regex ForRegex = new(@"(?s)\[for (?<n>[^][]+) in (?<variable>[^][]+)](?>(?:(?!\[for\s|\[end\ for]).)+|(?<close-open>)\[end\ for]|(?<open>)\[for\s+(?:[^][]+)])*(?(open)(?!))\[end\ for]", Options);
+        private static readonly Regex RenderRegex = new(@"(?:\[\=)(?<key>[a-zA-Z0-9\.]+)(?:\:(?<format>[a-zA-Z-0-9\\\/\-_\.\: \(\)]+))?(?:\])", Options);
         private static readonly Regex ForSplit = new(@"(?s)\[split\=(?<mod>\d+)](?<value>(?>(?:(?!\[split\s|\[split\ end]).)+|(?<-open>)\[split\ end]|(?<open>)\[split\=(?<mod>\d+)])*(?(open)(?!)))\[split\ end]", Options);
         private static readonly Regex RenderTernaryRegex = new(@"(?:\[iif[ ]*(?<variable>[a-zA-Z0-9_]+)[ =]*(?<value>[a-zA-Z0-9]*)[ \?]*(?<fq>['""]{1})(?<true_variable>(?:(?!\k<fq>).)+)\k<fq>[ :]+(?<sq>['""]{1})(?<false_variable>(?:(?!\k<sq>).)*)\k<sq>[ ]*\])", Options);
+        private static readonly Regex TruncateRegex = new(@"truncate\((?<length>\d+)\)", Options);
 
         private readonly IList<Func<string, IDictionary<string, object>, bool, string>> processors = new List<Func<string, IDictionary<string, object>, bool, string>>();
 
@@ -118,34 +119,61 @@ namespace Sandra.Templating
             return RenderRegex.Replace(template, m =>
             {
                 var key = m.Groups["key"].Captures[0].Value;
-                var format = GetFormat(m.Groups["format"]);
+                var formatStr = m.Groups["format"].Success ? m.Groups["format"].Value : string.Empty;
                 var keySplit = key.Split('.');
                 var keyPrefix = keySplit.First();
 
                 var rawValue = data.FirstOrDefault(x => x.Key.Equals(key, StringComparison.InvariantCultureIgnoreCase));
+                object valueObj = null;
 
                 if (!string.IsNullOrEmpty(rawValue.Key))
                 {
-                    return string.Format(format, rawValue.Value);
+                    valueObj = rawValue.Value;
                 }
-
-                rawValue = data.FirstOrDefault(x => x.Key.Equals(keyPrefix, StringComparison.InvariantCultureIgnoreCase));
-
-                if (!string.IsNullOrEmpty(rawValue.Key))
+                else
                 {
-                    // Assume we need to take the value of a property
-                    if (keySplit.Length > 1)
+                    rawValue = data.FirstOrDefault(x => x.Key.Equals(keyPrefix, StringComparison.InvariantCultureIgnoreCase));
+
+                    if (!string.IsNullOrEmpty(rawValue.Key))
                     {
-                        var value = rawValue.Value.GetType().GetProperty(keySplit.Last())?.GetValue(rawValue.Value).ToString();
-
-                        return string.Format(format, value);
+                        // Assume we need to take the value of a property
+                        if (keySplit.Length > 1)
+                        {
+                            valueObj = rawValue.Value?.GetType().GetProperty(keySplit.Last())?.GetValue(rawValue.Value);
+                        }
+                        else
+                        {
+                            valueObj = rawValue.Value;
+                        }
                     }
-
-                    return string.Format(format, rawValue.Value);
                 }
 
-                return preserveContent ? m.Value : string.Empty;
+                if (valueObj == null)
+                {
+                    return preserveContent ? m.Value : string.Empty;
+                }
+
+                // Check if it's a truncate format
+                var truncateMatch = TruncateRegex.Match(formatStr);
+                if (truncateMatch.Success)
+                {
+                    int length = int.Parse(truncateMatch.Groups["length"].Value);
+                    return TruncateString(valueObj.ToString(), length);
+                }
+
+                var format = GetFormat(m.Groups["format"]);
+                return string.Format(format, valueObj);
             });
+        }
+
+        private string TruncateString(string value, int length)
+        {
+            if (string.IsNullOrEmpty(value) || value.Length <= length)
+            {
+                return value;
+            }
+
+            return value.Substring(0, length);
         }
 
         private string GetFormat(Group formatGroup)
@@ -162,6 +190,12 @@ namespace Sandra.Templating
                 return "{0}";
             }
 
+            // Don't use standard string.Format for truncate - it's handled separately
+            if (TruncateRegex.IsMatch(format))
+            {
+                return "{0}";
+            }
+
             return "{0:" + format + "}";
         }
 
@@ -170,7 +204,7 @@ namespace Sandra.Templating
             return ForRegex.Replace(template, m =>
             {
                 var key = m.Groups["variable"].Captures[0].Value;
-                var name = m.Groups["name"].Captures[0].Value;
+                var name = m.Groups["n"].Captures[0].Value;
 
                 var rawValue = data.FirstOrDefault(x => x.Key.ToLower().Equals(key.ToLower()));
 
