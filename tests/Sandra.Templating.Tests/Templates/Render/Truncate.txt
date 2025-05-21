@@ -1,0 +1,2 @@
+[=LongText:truncate(10)]
+[=LongText:truncate(20)]
